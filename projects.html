@@ -21,7 +21,7 @@
     <meta property="twitter:description" content="Explore my red team portfolio and vulnerability research.">
     <meta property="twitter:image" content="https://contrastx.vercel.app/assets/Banner.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
@@ -30,6 +30,132 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 
     <script defer src="/_vercel/insights/script.js"></script>
+
+    <style>
+        :root {
+            --mono: 'JetBrains Mono', monospace;
+            --teal: #2ec4b6;
+            --red-glow: rgba(230,48,48,0.10);
+            --red-dim: #7a1515;
+        }
+
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .project-card-h {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+            background: var(--card-bg, #111116);
+            border: 1px solid var(--border-color, #1e1e28);
+            border-radius: 6px;
+            padding: 1.8rem;
+            transition: border-color 0.25s, transform 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card-h::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-color, #e63030), transparent);
+        }
+        .project-card-h:hover {
+            border-color: var(--accent-color, #e63030);
+            transform: translateY(-2px);
+        }
+
+        .project-info-h h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+        .project-info-h p {
+            font-size: 0.87rem;
+            line-height: 1.7;
+            opacity: 0.7;
+            margin-bottom: 1.1rem;
+        }
+
+        .proj-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.7rem;
+        }
+        .proj-tag {
+            font-family: var(--mono);
+            font-size: 0.63rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 2px;
+            border: 1px solid;
+        }
+        .tag-red  { color: var(--accent-color, #e63030); border-color: var(--red-dim); background: var(--red-glow); }
+        .tag-teal { color: var(--teal); border-color: rgba(46,196,182,0.3); background: rgba(46,196,182,0.07); }
+        .tag-gray { color: #9494a8; border-color: #2a2a38; background: transparent; }
+
+        .proj-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--mono);
+            font-size: 0.67rem;
+            color: #9494a8;
+            margin-bottom: 0.7rem;
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .s-active  { background: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .s-wip     { background: #f5a623; box-shadow: 0 0 5px #f5a623; }
+        .s-archive { background: var(--accent-color, #e63030); box-shadow: 0 0 5px #e63030; }
+
+        .proj-preview {
+            background: #0d0d10;
+            border: 1px solid #1e1e28;
+            border-radius: 4px;
+            overflow: hidden;
+            font-family: var(--mono);
+            font-size: 0.71rem;
+            line-height: 1.65;
+        }
+        .preview-bar {
+            background: #1a1a22;
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #222230;
+        }
+        .dot { width: 9px; height: 9px; border-radius: 50%; }
+        .dot-r { background: #e63030; }
+        .dot-y { background: #f5a623; }
+        .dot-g { background: #2ecc71; }
+        .preview-label { color: #555566; font-size: 0.64rem; margin-left: 4px; }
+        .preview-body  { padding: 10px 14px; min-height: 140px; }
+
+        .t-prompt { color: var(--accent-color, #e63030); }
+        .t-cmd    { color: #f0f0f4; }
+        .t-out    { color: #6b6b7a; }
+        .t-hi     { color: var(--teal); }
+        .t-ok     { color: #2ecc71; }
+        .t-warn   { color: #f5a623; }
+
+        .btn-group { display: flex; gap: 0.7rem; flex-wrap: wrap; align-items: center; }
+        .private-note { font-family: var(--mono); font-size: 0.72rem; opacity: 0.45; }
+
+        @media (max-width: 768px) {
+            .project-card-h { grid-template-columns: 1fr; }
+            .proj-preview { order: -1; }
+        }
+    </style>
 </head>
 <body>
 
@@ -67,41 +193,186 @@
         </div>
 
         <div class="project-list">
-            
-            <article class="project-card-h">
-                <div class="project-info-h">
-                    <h3>Cybersecurity Simulation</h3>
-                    <p>Tackled advanced CTF challenges on platforms like TryHackMe, HackTheBox, and PortSwigger. Focused on web exploitation and privilege escalation.</p>
-                    <a href="#" class="btn btn-secondary">Live View &rarr;</a>
-                </div>
-                <div class="project-img-h">
-                    <span>[Screenshot Placeholder]</span>
-                </div>
-            </article>
 
+            <!-- 1: ReconX -->
             <article class="project-card-h">
                 <div class="project-info-h">
-                    <h3>Blitzstorm CTF - 2024</h3>
-                    <p>Developed vulnerable web apps to simulate real-world flaws and improve bug hunting skills. Guided participants through complex security challenges.</p>
-                    
-                    <div class="social-links" style="margin-top: 1rem;">
-                        <a href="https://github.com/contrastx" target="_blank" aria-label="GitHub Repository"><i class="fab fa-github"></i></a>
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-red">Featured</span>
+                        <span class="proj-tag tag-teal">Python</span>
+                        <span class="proj-tag tag-gray">Recon</span>
+                        <span class="proj-tag tag-gray">Automation</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-wip"></span> In Development</div>
+                    <h3>ReconX — Automated Recon Framework</h3>
+                    <p>A modular recon automation script that chains DNS enumeration, port scanning via Nmap, directory fuzzing with ffuf, and subdomain brute-forcing into a single workflow. Built to cut repetitive pre-engagement steps during bug bounty and VAPT work.</p>
+                    <div class="btn-group">
+                        <a href="progproj.html" class="btn btn-secondary">Live View &rarr;</a>
                     </div>
                 </div>
-                <div class="project-img-h">
-                    <span>[Screenshot Placeholder]</span>
+                <div class="proj-preview">
+                    <div class="preview-bar">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <span class="preview-label">reconx.py — bash</span>
+                    </div>
+                    <div class="preview-body">
+                        <div><span class="t-prompt">❯ </span><span class="t-cmd">python3 reconx.py -t target.com --full</span></div>
+                        <div class="t-out">&nbsp; [*] Starting full recon on target.com</div>
+                        <div class="t-out">&nbsp; [*] Resolving DNS records...</div>
+                        <div class="t-hi">&nbsp; [+] A &nbsp;&nbsp; → 104.21.48.12</div>
+                        <div class="t-hi">&nbsp; [+] MX &nbsp; → mail.target.com</div>
+                        <div class="t-out">&nbsp; [*] Running port scan (top 1000)...</div>
+                        <div class="t-ok">&nbsp; [+] 80/tcp &nbsp; OPEN &nbsp;nginx/1.18</div>
+                        <div class="t-warn">&nbsp; [!] 8080/tcp OPEN &nbsp;Apache Tomcat</div>
+                        <div class="t-out">&nbsp; [*] Fuzzing directories...</div>
+                        <div class="t-hi">&nbsp; [+] Found: /admin &nbsp;/backup &nbsp;/.env</div>
+                    </div>
                 </div>
             </article>
-            
-        </div>
-    </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2026 contrastx. All rights reserved.</p>
-        </div>
-    </footer>
+            <!-- 2: VulnLab -->
+            <article class="project-card-h">
+                <div class="project-info-h">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-teal">PHP</span>
+                        <span class="proj-tag tag-gray">Web Security</span>
+                        <span class="proj-tag tag-gray">Training</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-active"></span> Active</div>
+                    <h3>VulnLab — Intentionally Vulnerable App</h3>
+                    <p>A self-hosted vulnerable web application with hand-crafted SQLi, XSS, IDOR, SSRF, and broken authentication flaws. Built to understand how vulnerabilities exist in real codebases before hunting them in the wild.</p>
+                    <div class="btn-group">
+                        <a href="phpexploit.html" class="btn btn-secondary">Live View &rarr;</a>
+                    </div>
+                </div>
+                <div class="proj-preview">
+                    <div class="preview-bar">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <span class="preview-label">vulnlab — localhost:8080</span>
+                    </div>
+                    <div class="preview-body">
+                        <div class="t-out">&nbsp; GET /login HTTP/1.1</div>
+                        <div class="t-out">&nbsp; Host: localhost:8080</div>
+                        <div class="t-out">&nbsp;</div>
+                        <div><span class="t-warn">&nbsp; [SQLi] </span><span class="t-out">Payload: ' OR 1=1--</span></div>
+                        <div class="t-ok">&nbsp; [+] Auth bypass successful</div>
+                        <div class="t-out">&nbsp;</div>
+                        <div><span class="t-warn">&nbsp; [XSS] &nbsp;</span><span class="t-out">Reflected in /search?q=</span></div>
+                        <div class="t-ok">&nbsp; [+] Script executed in context</div>
+                        <div class="t-out">&nbsp;</div>
+                        <div><span class="t-warn">&nbsp; [IDOR] </span><span class="t-out">/api/user?id=2 → admin data</span></div>
+                    </div>
+                </div>
+            </article>
 
-    <script src="script.js"></script>
-</body>
-</html>
+            <!-- 3: Null Existence Infra -->
+            <article class="project-card-h">
+                <div class="project-info-h">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-red">CTF</span>
+                        <span class="proj-tag tag-teal">Docker</span>
+                        <span class="proj-tag tag-gray">Infrastructure</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-active"></span> Active</div>
+                    <h3>Null Existence — CTF Infrastructure</h3>
+                    <p>Custom CTFd deployment and challenge infrastructure for team Null Existence. Docker-containerized environments, automated flag rotation, and a private practice platform for team training ahead of competitions.</p>
+                    <div class="btn-group">
+                        <span class="private-note">// Team Private</span>
+                    </div>
+                </div>
+                <div class="proj-preview">
+                    <div class="preview-bar">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <span class="preview-label">null-existence — ctfd</span>
+                    </div>
+                    <div class="preview-body">
+                        <div><span class="t-prompt">❯ </span><span class="t-cmd">docker-compose up -d</span></div>
+                        <div class="t-ok">&nbsp; [+] ctfd &nbsp;&nbsp;&nbsp; ... started</div>
+                        <div class="t-ok">&nbsp; [+] db &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... started</div>
+                        <div class="t-ok">&nbsp; [+] redis &nbsp;&nbsp; ... started</div>
+                        <div class="t-out">&nbsp; [*] Loading challenge configs...</div>
+                        <div class="t-hi">&nbsp; [+] 12 challenges imported</div>
+                        <div class="t-hi">&nbsp; [+] Categories: web, misc, osint</div>
+                        <div class="t-out">&nbsp; [*] Server live on :8000</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4: SubTake -->
+            <article class="project-card-h">
+                <div class="project-info-h">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-teal">Bash</span>
+                        <span class="proj-tag tag-gray">Bug Bounty</span>
+                        <span class="proj-tag tag-gray">OSINT</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-active"></span> Complete</div>
+                    <h3>SubTake — Subdomain Takeover Scanner</h3>
+                    <p>A lightweight Bash script that checks a list of subdomains for dangling CNAME records pointing to unclaimed services — Heroku, GitHub Pages, Netlify, and more. Used during bug bounty recon to surface takeover candidates fast.</p>
+                    <div class="btn-group">
+                        <span class="private-note">// Private Repo</span>
+                    </div>
+                </div>
+                <div class="proj-preview">
+                    <div class="preview-bar">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <span class="preview-label">subtake.sh</span>
+                    </div>
+                    <div class="preview-body">
+                        <div><span class="t-prompt">❯ </span><span class="t-cmd">bash subtake.sh subs.txt</span></div>
+                        <div class="t-out">&nbsp; [*] Checking 48 subdomains...</div>
+                        <div class="t-out">&nbsp; [-] api.target.com &nbsp;&nbsp;&nbsp; → resolves</div>
+                        <div class="t-out">&nbsp; [-] mail.target.com &nbsp;&nbsp; → resolves</div>
+                        <div class="t-warn">&nbsp; [?] dev.target.com &nbsp;&nbsp;&nbsp; → CNAME → Github Pages</div>
+                        <div class="t-ok">&nbsp; [!] staging.target.com → VULNERABLE</div>
+                        <div class="t-hi">&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; CNAME → heroku → unclaimed</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5: Cybersecurity Simulation -->
+            <article class="project-card-h">
+                <div class="project-info-h">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-red">Research</span>
+                        <span class="proj-tag tag-gray">TryHackMe</span>
+                        <span class="proj-tag tag-gray">HackTheBox</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-active"></span> Ongoing</div>
+                    <h3>Cybersecurity Simulation</h3>
+                    <p>Tackled advanced CTF challenges on platforms like TryHackMe, HackTheBox, and PortSwigger. Focused on web exploitation and privilege escalation. Key techniques documented as writeups.</p>
+                    <div class="btn-group">
+                        <a href="https://contrastx-writeups.vercel.app/writeups.html" class="btn btn-secondary">Writeups &rarr;</a>
+                    </div>
+                </div>
+                <div class="proj-preview">
+                    <div class="preview-bar">
+                        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+                        <span class="preview-label">thm / htb / portswigger</span>
+                    </div>
+                    <div class="preview-body">
+                        <div class="t-out">&nbsp; [*] Platform: TryHackMe</div>
+                        <div class="t-hi">&nbsp; [+] Room: Advent of Cyber 2024</div>
+                        <div class="t-out">&nbsp;</div>
+                        <div class="t-out">&nbsp; [*] Platform: PortSwigger Academy</div>
+                        <div class="t-hi">&nbsp; [+] Lab: SQL Injection UNION attack</div>
+                        <div class="t-ok">&nbsp; [+] Solved — credentials extracted</div>
+                        <div class="t-out">&nbsp;</div>
+                        <div class="t-hi">&nbsp; [+] Writeups published: 5</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 6: Blitzstorm CTF -->
+            <article class="project-card-h">
+                <div class="project-info-h">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-red">CTF</span>
+                        <span class="proj-tag tag-gray">Web Exploit</span>
+                        <span class="proj-tag tag-gray">2024</span>
+                    </div>
+                    <div class="proj-status"><span class="status-dot s-archive"></span> Archived</div>
+                    <h3>Blitzstorm CTF — 2024</h3>
+                    <p>Developed vulnerable web apps to simulate real-world flaws and improve bug hunting skills. Guided participants through complex security challenges including header injection, IDOR, and logic bypass vulnerabilities.</p>
+                    <div class="btn-group">
+                        <a href="https://
