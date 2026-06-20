@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects | ContrastX</title>
+  <meta name="description" content="Security tools, CTF infrastructure, and research projects by ContrastX — cybersecurity researcher & bug bounty hunter."/>
+  <meta name="theme-color" content="#FF0000"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0c;
+      --bg2:      #111116;
+      --bg3:      #18181f;
+      --border:   #1e1e28;
+      --red:      #e63030;
+      --red-dim:  #7a1515;
+      --red-glow: rgba(230,48,48,0.12);
+      --white:    #f0f0f4;
+      --gray:     #6b6b7a;
+      --gray2:    #9494a8;
+      --teal:     #2ec4b6;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--sans);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      background: rgba(10,10,12,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--white); text-decoration: none;
+    }
+    .nav-brand span { color: var(--red); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--gray2); text-decoration: none; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-links a.active { color: var(--red); }
+
+    /* ── HERO ── */
+    .page-hero {
+      padding: 120px 2rem 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, var(--red-glow), transparent 70%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 1rem;
+    }
+    .page-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+    .page-hero p {
+      max-width: 520px; margin: 0 auto;
+      font-size: 0.95rem; color: var(--gray2); line-height: 1.7;
+    }
+
+    /* ── FILTER TABS ── */
+    .filters {
+      display: flex; justify-content: center; gap: 0.5rem;
+      padding: 0 2rem 3rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      font-family: var(--mono); font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.4rem 1.1rem;
+      border: 1px solid var(--border); border-radius: 2px;
+      background: transparent; color: var(--gray2);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--gray); color: var(--white); }
+    .filter-btn.active { border-color: var(--red); color: var(--red); background: var(--red-glow); }
+
+    /* ── GRID ── */
+    .projects-grid {
+      max-width: 1100px; margin: 0 auto;
+      padding: 0 2rem 6rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative;
+    }
+    .card:hover {
+      border-color: var(--red-dim);
+      transform: translateY(-3px);
+    }
+    .card-top-bar {
+      height: 3px;
+      background: linear-gradient(90deg, var(--red), transparent);
+    }
+
+    /* fake terminal screenshot */
+    .card-screenshot {
+      background: #0d0d10;
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      line-height: 1.6;
+      overflow: hidden;
+      position: relative;
+      height: 160px;
+    }
+    .term-bar {
+      background: #1a1a22;
+      padding: 6px 10px;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid #222230;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #e63030; }
+    .dot-y { background: #f5a623; }
+    .dot-g { background: #2ecc71; }
+    .term-title { color: var(--gray); font-size: 0.68rem; margin-left: 4px; }
+    .term-body { padding: 10px 14px; overflow: hidden; height: 128px; }
+    .t-prompt { color: var(--red); }
+    .t-cmd    { color: var(--white); }
+    .t-out    { color: var(--gray2); }
+    .t-hi     { color: var(--teal); }
+    .t-warn   { color: #f5a623; }
+    .t-ok     { color: #2ecc71; }
+
+    /* browser mock screenshot */
+    .card-browser {
+      background: #0d0d10;
+      border-bottom: 1px solid var(--border);
+      height: 160px; overflow: hidden;
+    }
+    .browser-bar {
+      background: #1a1a22;
+      padding: 6px 10px;
+      display: flex; align-items: center; gap: 8px;
+      border-bottom: 1px solid #222230;
+    }
+    .browser-url {
+      background: #0d0d10; border: 1px solid #2a2a38;
+      border-radius: 2px; padding: 2px 8px;
+      font-family: var(--mono); font-size: 0.65rem; color: var(--gray2);
+      flex: 1;
+    }
+    .browser-body {
+      padding: 12px 14px;
+      font-family: var(--mono); font-size: 0.7rem; line-height: 1.7;
+    }
+
+    .card-body { padding: 1.2rem 1.4rem; flex: 1; display: flex; flex-direction: column; }
+
+    .card-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .tag {
+      font-family: var(--mono); font-size: 0.65rem; font-weight: 500;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 2px;
+      border: 1px solid;
+    }
+    .tag-red   { color: var(--red);  border-color: var(--red-dim); background: rgba(230,48,48,0.07); }
+    .tag-teal  { color: var(--teal); border-color: rgba(46,196,182,0.3); background: rgba(46,196,182,0.07); }
+    .tag-gray  { color: var(--gray2); border-color: #2a2a38; background: transparent; }
+
+    .card-title {
+      font-size: 1rem; font-weight: 600; letter-spacing: -0.01em;
+      margin-bottom: 0.5rem; color: var(--white);
+    }
+    .card-desc {
+      font-size: 0.83rem; color: var(--gray2); line-height: 1.65;
+      flex: 1; margin-bottom: 1.2rem;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .card-status {
+      font-family: var(--mono); font-size: 0.68rem;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .status-active { background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
+    .status-wip    { background: #f5a623; box-shadow: 0 0 6px #f5a623; }
+    .status-private{ background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+    .card-links { display: flex; gap: 0.8rem; }
+    .link-btn {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+      text-decoration: none; padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border); border-radius: 2px;
+      color: var(--gray2); transition: all 0.2s;
+    }
+    .link-btn:hover { border-color: var(--red); color: var(--red); }
+    .link-btn.primary {
+      border-color: var(--red-dim); color: var(--red); background: var(--red-glow);
+    }
+    .link-btn.primary:hover { background: rgba(230,48,48,0.2); }
+
+    /* ── FEATURED CARD (full-width) ── */
+    .card-featured {
+      grid-column: 1 / -1;
+      flex-direction: row;
+    }
+    .card-featured .card-screenshot {
+      width: 340px; flex-shrink: 0;
+      height: auto; border-bottom: none;
+      border-right: 1px solid var(--border);
+    }
+    .card-featured .card-top-bar {
+      position: absolute; top: 0; left: 0; right: 0; width: auto;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: 0.78rem; color: var(--gray);
+      font-family: var(--mono);
+    }
+
+    @media (max-width: 700px) {
+      .card-featured { flex-direction: column; }
+      .card-featured .card-screenshot { width: 100%; height: 160px; border-right: none; border-bottom: 1px solid var(--border); }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="https://contrastx.vercel.app"><span>//</span> ContrastX</a>
+  <ul class="nav-links">
+    <li><a href="https://contrastx.vercel.app/index.html#home">Home</a></li>
+    <li><a href="https://contrastx.vercel.app/index.html#about">About</a></li>
+    <li><a href="#" class="active">Projects</a></li>
+    <li><a href="https://contrastx-writeups.vercel.app/writeups.html">Writeups</a></li>
+    <li><a href="https://contrastx.vercel.app/certificates.html">Certificates</a></li>
+    <li><a href="https://contrastx.vercel.app/achievements.html">Achievements</a></li>
+    <li><a href="https://contrastx.vercel.app/resume.html">Resume</a></li>
+    <li><a href="https://contrastx.vercel.app/index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <p class="eyebrow">// Security Research & Tools</p>
+  <h1>Projects</h1>
+  <p>Tools, CTF infrastructure, and research experiments built to sharpen offensive security skills and automate the grind.</p>
+</section>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active">All</button>
+  <button class="filter-btn">Tools</button>
+  <button class="filter-btn">CTF</button>
+  <button class="filter-btn">Research</button>
+  <button class="filter-btn">Web</button>
+</div>
+
+<!-- GRID -->
+<div class="projects-grid">
+
+  <!-- FEATURED: ReconX -->
+  <div class="card card-featured">
+    <div class="card-top-bar"></div>
+    <div class="card-screenshot" style="display:flex;flex-direction:column;">
+      <div class="term-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="term-title">reconx.py — bash</span>
+      </div>
+      <div class="term-body">
+        <div><span class="t-prompt">❯ </span><span class="t-cmd">python3 reconx.py -t target.com --full</span></div>
+        <div class="t-out">  [*] Starting full recon on target.com</div>
+        <div class="t-out">  [*] Resolving DNS records...</div>
+        <div class="t-hi">  [+] A     → 104.21.48.12</div>
+        <div class="t-hi">  [+] MX    → mail.target.com</div>
+        <div class="t-out">  [*] Running port scan (top 1000)...</div>
+        <div class="t-ok">  [+] 80/tcp   OPEN  nginx/1.18</div>
+        <div class="t-ok">  [+] 443/tcp  OPEN  SSL/TLS</div>
+        <div class="t-warn">  [!] 8080/tcp OPEN  Apache Tomcat</div>
+        <div class="t-out">  [*] Fuzzing directories...</div>
+        <div class="t-hi">  [+] Found: /admin  /backup  /.env</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-red">Featured</span>
+        <span class="tag tag-teal">Python</span>
+        <span class="tag tag-gray">Recon</span>
+        <span class="tag tag-gray">Automation</span>
+      </div>
+      <h3 class="card-title">ReconX — Automated Recon Framework</h3>
+      <p class="card-desc">
+        A modular recon automation script that chains DNS enumeration, port scanning via Nmap, directory fuzzing with ffuf, and subdomain brute-forcing into a single workflow. Built to eliminate repetitive pre-engagement steps during bug bounty and VAPT engagements. Supports target scoping, JSON output, and custom wordlists.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-wip"></div>
+          <span style="color:var(--gray2)">In Development</span>
+        </div>
+        <div class="card-links">
+          <a href="#" class="link-btn">Private Repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: VulnLab -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-screenshot">
+      <div class="term-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="term-title">vulnlab — http://localhost:8080</span>
+      </div>
+      <div class="term-body">
+        <div class="t-out">  GET /login HTTP/1.1</div>
+        <div class="t-out">  Host: localhost:8080</div>
+        <div class="t-out">&nbsp;</div>
+        <div><span class="t-warn">  [SQLi] </span><span class="t-out">Payload: ' OR 1=1--</span></div>
+        <div class="t-ok">  [+] Auth bypass successful</div>
+        <div class="t-out">&nbsp;</div>
+        <div><span class="t-warn">  [XSS]  </span><span class="t-out">Reflected in /search?q=</span></div>
+        <div class="t-ok">  [+] Script executed in context</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-teal">PHP</span>
+        <span class="tag tag-gray">Web Security</span>
+        <span class="tag tag-gray">Training</span>
+      </div>
+      <h3 class="card-title">VulnLab — Intentionally Vulnerable App</h3>
+      <p class="card-desc">
+        A self-hosted vulnerable web application with hand-crafted SQLi, XSS, IDOR, SSRF, and broken auth vulnerabilities. Built for personal skill development and to understand how flaws exist in real codebases before hunting them in the wild.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-active"></div>
+          <span style="color:var(--gray2)">Active</span>
+        </div>
+        <div class="card-links">
+          <a href="#" class="link-btn">Private</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: NullCTF Infra -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-screenshot">
+      <div class="term-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="term-title">null-existence — ctfd setup</span>
+      </div>
+      <div class="term-body">
+        <div><span class="t-prompt">❯ </span><span class="t-cmd">docker-compose up -d</span></div>
+        <div class="t-ok">  [+] ctfd        ... started</div>
+        <div class="t-ok">  [+] db          ... started</div>
+        <div class="t-ok">  [+] redis       ... started</div>
+        <div class="t-out">  [*] Loading challenge configs...</div>
+        <div class="t-hi">  [+] 12 challenges imported</div>
+        <div class="t-hi">  [+] Categories: web, misc, osint</div>
+        <div class="t-out">  [*] Server live on :8000</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-red">CTF</span>
+        <span class="tag tag-teal">Docker</span>
+        <span class="tag tag-gray">Infrastructure</span>
+      </div>
+      <h3 class="card-title">Null Existence — CTF Infrastructure</h3>
+      <p class="card-desc">
+        Custom CTFd deployment and challenge infrastructure for team <strong style="color:var(--white)">Null Existence</strong>. Includes Docker-containerized challenge environments, automated flag rotation, and a private practice platform for team training ahead of competitions.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-active"></div>
+          <span style="color:var(--gray2)">Active</span>
+        </div>
+        <div class="card-links">
+          <a href="#" class="link-btn">Team Private</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: SubTakeover Checker -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-screenshot">
+      <div class="term-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="term-title">subtake.sh</span>
+      </div>
+      <div class="term-body">
+        <div><span class="t-prompt">❯ </span><span class="t-cmd">bash subtake.sh subs.txt</span></div>
+        <div class="t-out">  [*] Checking 48 subdomains...</div>
+        <div class="t-out">  [-] api.target.com        → resolves</div>
+        <div class="t-out">  [-] mail.target.com       → resolves</div>
+        <div class="t-warn">  [?] dev.target.com        → CNAME → Github Pages</div>
+        <div class="t-ok">  [!] staging.target.com    → VULNERABLE</div>
+        <div class="t-hi">      CNAME → heroku → unclaimed</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-teal">Bash</span>
+        <span class="tag tag-gray">Bug Bounty</span>
+        <span class="tag tag-gray">OSINT</span>
+      </div>
+      <h3 class="card-title">SubTake — Subdomain Takeover Scanner</h3>
+      <p class="card-desc">
+        A lightweight Bash script that checks a list of subdomains for dangling CNAME records pointing to unclaimed services (Heroku, GitHub Pages, Netlify, etc.). Used during bug bounty recon to quickly surface low-hanging subdomain takeover candidates.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-active"></div>
+          <span style="color:var(--gray2)">Complete</span>
+        </div>
+        <div class="card-links">
+          <a href="#" class="link-btn">Private Repo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: VAPT Report Template -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-browser">
+      <div class="browser-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <div class="browser-url">file:///vapt-report-template.pdf</div>
+      </div>
+      <div class="browser-body">
+        <div style="color:var(--red);font-weight:600">VAPT REPORT — CONFIDENTIAL</div>
+        <div class="t-out">Target: [REDACTED]</div>
+        <div class="t-out">Tester: ContrastX | Date: 2026</div>
+        <div style="color:var(--gray);margin-top:6px">── Executive Summary ──────────</div>
+        <div class="t-hi">  Critical  : 2</div>
+        <div class="t-warn">  High      : 4</div>
+        <div class="t-out">  Medium    : 7</div>
+        <div class="t-out">  Low       : 3</div>
+        <div style="color:var(--gray);margin-top:4px">── Findings ───────────────────</div>
+        <div class="t-ok">  [CVSS 9.8] SQL Injection → /api/login</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-red">Research</span>
+        <span class="tag tag-gray">VAPT</span>
+        <span class="tag tag-gray">Documentation</span>
+      </div>
+      <h3 class="card-title">VAPT Report Template & Methodology</h3>
+      <p class="card-desc">
+        A professional penetration testing report template covering executive summary, CVSS-scored findings, reproduction steps, evidence screenshots, and remediation guidance. Built on real-world methodology for web app and network assessments.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-active"></div>
+          <span style="color:var(--gray2)">Complete</span>
+        </div>
+        <div class="card-links">
+          <a href="https://contrastx-writeups.vercel.app/writeups.html" class="link-btn primary">View Writeups →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 6: Blitzstorm CTF -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="card-screenshot">
+      <div class="term-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="term-title">blitzstorm-2024 — ctfd</span>
+      </div>
+      <div class="term-body">
+        <div class="t-out">  [*] Blitzstorm CTF 2024</div>
+        <div class="t-out">  [*] Category: Web Exploitation</div>
+        <div class="t-out">&nbsp;</div>
+        <div class="t-hi">  Challenge: "Hidden in Plain Sight"</div>
+        <div class="t-out">  Hint: The admin forgot something...</div>
+        <div class="t-out">&nbsp;</div>
+        <div><span class="t-prompt">❯ </span><span class="t-cmd">curl -H "X-Role: admin" /flag</span></div>
+        <div class="t-ok">  flag{h34d3r_1nj3ct10n_ftw}</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="card-tags">
+        <span class="tag tag-red">CTF</span>
+        <span class="tag tag-gray">Web Exploit</span>
+        <span class="tag tag-gray">2024</span>
+      </div>
+      <h3 class="card-title">Blitzstorm CTF — Challenge Design</h3>
+      <p class="card-desc">
+        Designed and deployed web exploitation challenges for Blitzstorm CTF 2024. Created vulnerable applications simulating real-world flaws including header injection, IDOR, and logic bypass vulnerabilities. Guided participants through the challenge environment during the event.
+      </p>
+      <div class="card-footer">
+        <div class="card-status">
+          <div class="status-dot status-private"></div>
+          <span style="color:var(--gray2)">Archived</span>
+        </div>
+        <div class="card-links">
+          <a href="https://contrastx-writeups.vercel.app/writeups.html" class="link-btn primary">Writeup →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 ContrastX — contrastx.vercel.app
+</footer>
+
+<script>
+  // Filter tab switching (visual only)
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
